@@ -1,3 +1,6 @@
+#Author: Ben-Edwards44
+
+
 import pygame
 import math
 
@@ -38,6 +41,8 @@ class Pendulum:
         return (int(anchor_pos[0] + x), int(anchor_pos[1] + y))
 
     def force_upper(self):
+        #Equations can be found here: https://www.myphysicslab.com/pendulum/double-pendulum-en.html
+
         numerator1 = -G * (2 * self.m1 + self.m2) * math.sin(self.theta) - self.m2 * G * math.sin(self.theta - 2 * self.theta2)
         numerator2 = 2 * math.sin(self.theta - self.theta2) * self.m2 * (self.ang_vel_l**2 * self.l2 + self.ang_vel_u**2 * self.l1 * math.cos(self.theta - self.theta2))
         numerator = numerator1 - numerator2
@@ -46,6 +51,8 @@ class Pendulum:
         self.ang_vel_u += numerator / denominator * self.dt
 
     def force_lower(self):
+        #Equations can be found here: https://www.myphysicslab.com/pendulum/double-pendulum-en.html
+
         numerator = 2 * math.sin(self.theta - self.theta2) * (self.ang_vel_u**2 * self.l1 * (self.m1 + self.m2) + G * (self.m1 + self.m2) * math.cos(self.theta) + self.ang_vel_l**2 * self.l2 * self.m2 * math.cos(self.theta - self.theta2))
         denominator = self.l2 * (2 * self.m1 + self.m2 - self.m2 * math.cos(2 * self.theta - 2 * self.theta2))
 
@@ -62,29 +69,6 @@ class Pendulum:
         for i, x in enumerate(self.positions):
             if i > 0:
                 pygame.draw.line(self.window, self.colour, x, self.positions[i - 1], 2)
-
-    def check_click(self):
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-
-        if self.upper_pos[0] - self.radius - 10 <= mouse_x <= self.upper_pos[0] + self.radius + 10 and self.upper_pos[1] - self.radius - 10 <= mouse_y <= self.upper_pos[1] + self.radius + 10:
-            self.move_to_mouse(True, pygame.mouse.get_pos())
-        elif self.lower_pos[0] - self.radius - 10 <= mouse_x <= self.lower_pos[0] + self.radius + 10 and self.lower_pos[1] - self.radius - 10 <= mouse_y <= self.lower_pos[1] + self.radius + 10:
-            self.move_to_mouse(False, pygame.mouse.get_pos())
-
-    def move_to_mouse(self, is_upper, mouse_pos):
-        x = mouse_pos[0]
-
-        if is_upper and x - self.upper_anchor[0] < self.l1:
-            y = int(math.sqrt(self.l1**2 - (x - self.upper_anchor[0])**2) + self.upper_anchor[1])
-            self.upper_pos = [x, y]
-            self.theta = self.find_angle(self.upper_anchor, self.upper_pos)
-        elif x - self.upper_pos[0] < self.l2:
-            y = int(math.sqrt(self.l2**2 - (x - self.upper_pos[0])**2) + self.upper_pos[1])
-            self.lower_pos = [x, y]
-            self.theta2 = self.find_angle(self.upper_pos, self.lower_pos)
-
-        self.ang_vel_u = 0
-        self.ang_vel_l = 0
 
     def main(self):
         self.force_upper()
