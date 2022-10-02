@@ -1,3 +1,6 @@
+#Author: Ben-Edwards44
+
+
 import pygame
 import random
 import pendulum
@@ -26,19 +29,6 @@ def create_single(mass_upper, mass_lower, length_upper, length_lower, angle_uppe
     upper_anchor = (400, 100)
     p = pendulum.Pendulum(mass_upper, mass_lower, upper_anchor, angle_upper, angle_lower, length_upper, length_lower, 15, colour, window)
     pendulums = [p]
-
-
-def vary_mass(num, length_upper, length_lower, start_angle):
-    global pendulums
-
-    pendulums = []
-    upper_anchor = (400, 100)
-
-    for i in range(num):
-        colour = find_colour(num, i)
-        
-        new = pendulum.Pendulum(random.uniform(4.9, 5.1), random.uniform(1.9, 2.1), upper_anchor, start_angle, start_angle, length_upper, length_lower, 15, colour, window)
-        pendulums.append(new)
 
 
 def vary_start_pos(num, length_upper, length_lower, mass_upper, mass_lower):
@@ -76,9 +66,6 @@ def main():
         window.fill((0, 0, 0))
         
         for i in pendulums:
-            if pygame.mouse.get_pressed(3)[0]:
-                i.check_click()
-
             i.main()
 
         for e in pygame.event.get():
